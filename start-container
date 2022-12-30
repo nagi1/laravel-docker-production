@@ -1,0 +1,36 @@
+#!/bin/bash
+
+cd ${APP_HOME}
+
+# Make sure that the www-data user has the same UID as the host user
+if [ ! -z "$WWWUSER" ]; then
+    usermod -u $WWWUSER www-data
+fi
+
+if [ ! -d /.composer ]; then
+    mkdir /.composer
+fi
+
+chmod -R ugo+rw /.composer
+
+## Make sure that APP_HOST_NAME is set correctly
+if test -z $(echo ${APP_HOST_NAME})
+then
+    echo "Please Set APP_HOST_NAME environment variable";
+    exit 1;
+fi
+
+# Here you can add any commands you want to run before the container starts
+# For example, you can run migrations, or install dependencies
+
+# php artisan migrate
+# php artisan queue:restart
+
+
+# Populate env files, this is needed for the frontend to work
+# Todo: add this to doucmnetation and refrerence the library
+# chmod +x ./import-meta-env-alpine
+# ./import-meta-env-alpine --example .env.example -o public/js/**
+
+# Start supervisord and services
+ /usr/bin/supervisord -c  /etc/supervisor/conf.d/supervisord.conf
