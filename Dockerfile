@@ -45,15 +45,15 @@ WORKDIR $APP_HOME
 # ca-certificates: A set of certificates for verifying the authenticity of SSL/TLS certificates.
 # zip: A utility for creating and manipulating zip archives.
 # unzip: A utility for extracting files from zip archives.
-# sqlite3: A command-line interface for SQLite.
-# dnsutils: A collection of utilities for querying DNS servers.
+# sqlite: A command-line interface for SQLite.
+# bind-tools: A collection of utilities for querying DNS name servers.
 #
 # "sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd" is for
 # Change the default shell for the user from ash to bash.
 
 RUN apk update \
     && apk add --no-cache bash nano sudo wget git openssh rsync jq && sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd \
-    && apk add --no-cache zip unzip curl sqlite nginx supervisor shadow htop openssh-keygen tar libgcc libstdc++ libuv dos2unix gnupg gosu ca-certificates zip unzip sqlite3 dnsutils
+    && apk add --no-cache zip unzip curl sqlite nginx supervisor shadow htop openssh-keygen tar libgcc libstdc++ libuv dos2unix gnupg gosu ca-certificates zip unzip sqlite bind-tools
 
 # Wait tool is used to manage dependencies between services in a Docker Compose file.
 # It allows you to specify that a service should only be started once other services
