@@ -96,7 +96,7 @@ RUN apk add --no-cache php82 \
     php82-tokenizer \
     php82-sodium \
     php82-pcntl \
-    php82-readline \
+    php82-ctype \
     php82-gd \
     php82-exif \
     php82-imap \
