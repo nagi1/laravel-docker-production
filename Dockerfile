@@ -1,5 +1,5 @@
 # Latest Alpine Linux Image
-FROM alpine:latest
+FROM alpine:edge
 
 # Set the maintainer
 LABEL maintainer="Ahmed Nagi"
@@ -41,7 +41,7 @@ WORKDIR $APP_HOME
 # dos2unix: A utility for converting text files between DOS, UNIX, and Mac formats.
 # wget: A utility for downloading files from the Internet.
 # gnupg: A utility for managing cryptographic keys.
-# gosu: A utility for running programs as another user.
+# su-exec: A utility for running programs as another user.
 # ca-certificates: A set of certificates for verifying the authenticity of SSL/TLS certificates.
 # zip: A utility for creating and manipulating zip archives.
 # unzip: A utility for extracting files from zip archives.
@@ -53,7 +53,7 @@ WORKDIR $APP_HOME
 
 RUN apk update \
     && apk add --no-cache bash nano sudo wget git openssh rsync jq && sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd \
-    && apk add --no-cache zip unzip curl sqlite nginx supervisor shadow htop openssh-keygen tar libgcc libstdc++ libuv dos2unix gnupg gosu ca-certificates zip unzip sqlite bind-tools
+    && apk add --no-cache zip unzip curl sqlite nginx supervisor shadow htop openssh-keygen tar libgcc libstdc++ libuv dos2unix gnupg su-exec ca-certificates zip unzip bind-tools
 
 # Wait tool is used to manage dependencies between services in a Docker Compose file.
 # It allows you to specify that a service should only be started once other services
