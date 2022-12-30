@@ -221,4 +221,4 @@ RUN ["chmod", "+x", "/usr/local/bin/start-container"]
 
 EXPOSE 80 443 6001
 
-ENTRYPOINT ["start-container"]
+ENTRYPOINT ["wait", "start-container"]
