@@ -100,7 +100,8 @@ RUN apk add --no-cache php82 \
     php82-gd \
     php82-exif \
     php82-imap \
-    php82-pecl-redis
+    php82-pecl-redis \
+    && ln -sf /usr/bin/php82 /usr/bin/php
 
 
 # Install Node.js 18, NPM 9 and Yarn
