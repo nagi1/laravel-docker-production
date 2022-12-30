@@ -7,14 +7,13 @@ LABEL maintainer="Ahmed Nagi"
 # Set the timezone
 RUN echo "UTC" > /etc/timezone
 
-# Set The default user and group for the container
-ARG WWWGROUP=www-data
 
 # Main working directory on the container
 ENV APP_HOME=/var/www/html
 
 # Set current working directory
 WORKDIR $APP_HOME
+
 
 # Install a variety of tools and libraries:
 #
@@ -47,13 +46,21 @@ WORKDIR $APP_HOME
 # unzip: A utility for extracting files from zip archives.
 # sqlite: A command-line interface for SQLite.
 # bind-tools: A collection of utilities for querying DNS name servers.
+# envsubst: A utility for substituting environment variables into a template.
 #
 # "sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd" is for
 # Change the default shell for the user from ash to bash.
 
 RUN apk update \
     && apk add --no-cache bash nano sudo wget git openssh rsync jq && sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd \
-    && apk add --no-cache zip unzip curl sqlite nginx supervisor shadow htop openssh-keygen tar libgcc libstdc++ libuv dos2unix gnupg su-exec ca-certificates zip unzip bind-tools
+    && apk add --no-cache zip unzip curl sqlite nginx supervisor shadow htop openssh-keygen tar libgcc libstdc++ libuv dos2unix gnupg su-exec ca-certificates zip unzip bind-tools envsubst
+
+# ensure www-data user exists
+RUN set -x ; \
+  addgroup -g 82 -S www-data ; \
+  adduser -u 82 -D -S -G www-data www-data
+# 82 is the standard uid/gid for "www-data" in Alpine
+
 
 # Wait tool is used to manage dependencies between services in a Docker Compose file.
 # It allows you to specify that a service should only be started once other services
@@ -131,10 +138,6 @@ RUN curl -sS https://getcomposer.org/installer -o composer-setup.php \
 # Clean up the apk cache to reduce the size of the image
 RUN  rm -rf /var/cache/apk/*
 
-
-# Create a user and group for the web server
-RUN groupadd --force -g $WWWGROUP www-data
-RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 www-data
 
 # Set up and configure supervisor and cron services:
 #
@@ -222,4 +225,4 @@ RUN ["chmod", "+x", "/usr/local/bin/start-container"]
 
 EXPOSE 80 443 6001
 
-ENTRYPOINT ["wait", "start-container"]
+CMD /wait && start-container

@@ -2,16 +2,11 @@
 
 cd ${APP_HOME}
 
-# Make sure that the www-data user has the same UID as the host user
-if [ ! -z "$WWWUSER" ]; then
-    usermod -u $WWWUSER www-data
-fi
-
 if [ ! -d /.composer ]; then
     mkdir /.composer
+    chmod -R ugo+rw /.composer
 fi
 
-chmod -R ugo+rw /.composer
 
 ## Make sure that APP_HOST_NAME is set correctly
 if test -z $(echo ${APP_HOST_NAME})
@@ -19,6 +14,10 @@ then
     echo "Please Set APP_HOST_NAME environment variable";
     exit 1;
 fi
+
+
+# Substitute environment variables in the nginx config without templating
+envsubst '${APP_HOST_NAME}' < /etc/nginx/conf.d/nginx-laravel.conf > /etc/nginx/conf.d/nginx-laravel.conf
 
 # Here you can add any commands you want to run before the container starts
 # For example, you can run migrations, or install dependencies
