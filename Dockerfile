@@ -14,7 +14,6 @@ ENV APP_HOME=/var/www/html
 # Set current working directory
 WORKDIR $APP_HOME
 
-
 # Install a variety of tools and libraries:
 #
 # bash: The Bash shell, a command-line interface for interacting with the operating system.
@@ -52,8 +51,11 @@ WORKDIR $APP_HOME
 # Change the default shell for the user from ash to bash.
 
 RUN apk update \
-    && apk add --no-cache bash nano sudo wget git openssh rsync jq && sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd \
-    && apk add --no-cache zip unzip curl sqlite nginx supervisor shadow htop openssh-keygen tar libgcc libstdc++ libuv dos2unix gnupg su-exec ca-certificates zip unzip bind-tools envsubst
+    && apk add --no-cache bash nano sudo wget git openssh rsync jq && sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
+
+RUN apk add --no-cache zip unzip curl sqlite nginx supervisor shadow htop openssh-keygen tar libgcc libstdc++ libuv dos2unix gnupg su-exec ca-certificates zip unzip bind-tools
+
+RUN apk add envsubst --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
 
 # ensure www-data user exists
 RUN set -x ; \
