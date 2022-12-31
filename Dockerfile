@@ -158,6 +158,8 @@ RUN mkdir -p /run/php/ \
     && touch /run/php/php8.2-fpm.sock \
     && chown www-data:www-data /run/php/php8.2-fpm.sock
 
+
+
 # Copy the configuration files for the services to the container
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./cron /var/spool/cron/crontabs/root
@@ -179,6 +181,10 @@ RUN mkdir -p /run/nginx/ \
     && touch /run/nginx/nginx.pid
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
+
+# Fix nginx permission error
+RUN mkdir -p /run/nginx/ \
+    && chown -Rf www-data:www-data /var/lib/nginx
 
 # create document root, fix permissions for www-data user and change owner to www-data
 # Some santy checks to make sure that laravel can write to the storage directory
@@ -204,7 +210,7 @@ RUN mkdir -p $APP_HOME/public \
     && touch $APP_HOME/storage/logs/laravel.log \
     && mkdir -p /home/www-data \
     && chown -R www-data:www-data /home/www-data \
-    && chmod -R 777 $APP_HOME/storage \
+    && chmod -R 755 $APP_HOME/storage \
     && chown -R www-data:www-data $APP_HOME
 
 # Extra fix for eof error, when using windows line endings

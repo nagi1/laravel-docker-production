@@ -16,8 +16,13 @@ then
 fi
 
 
-# Substitute environment variables in the nginx config without templating
-envsubst '${APP_HOST_NAME}' < /etc/nginx/conf.d/nginx-laravel.conf > /etc/nginx/conf.d/nginx-laravel.conf
+# Substitute the APP_HOST_NAME environment variable in the Nginx configuration file
+envsubst '$APP_HOST_NAME' < /etc/nginx/modules/nginx-laravel.conf > /etc/nginx/modules/nginx-laravel.conf.tmp
+
+
+# Overwrite the original Nginx configuration file with the updated version
+mv /etc/nginx/modules/nginx-laravel.conf.tmp /etc/nginx/modules/nginx-laravel.conf
+
 
 # Here you can add any commands you want to run before the container starts
 # For example, you can run migrations, or install dependencies
