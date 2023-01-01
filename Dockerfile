@@ -231,6 +231,7 @@ COPY ./start-container /usr/local/bin/start-container
 RUN dos2unix /usr/local/bin/start-container
 RUN ["chmod", "+x", "/usr/local/bin/start-container"]
 
-EXPOSE 80 443 6001
+EXPOSE 80 443
+# EXPOSE 6001
 
 CMD /wait && start-container
