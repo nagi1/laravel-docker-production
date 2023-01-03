@@ -58,10 +58,11 @@ RUN apk add --no-cache zip unzip curl sqlite nginx supervisor shadow htop openss
 RUN apk add envsubst --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
 
 # ensure www-data user exists
+# 82 is the standard uid/gid for "www-data" in Alpine
 RUN set -x ; \
   addgroup -g 82 -S www-data ; \
   adduser -u 82 -D -S -G www-data www-data
-# 82 is the standard uid/gid for "www-data" in Alpine
+
 
 
 # Wait tool is used to manage dependencies between services in a Docker Compose file.
@@ -126,8 +127,6 @@ RUN curl -sS https://getcomposer.org/installer -o composer-setup.php \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && rm -rf composer-setup.php
 
-# Install cpu limit tool for limiting cpu usage of a process when needed
- RUN apk add cpulimit
 
 
 # Install mysql client to use mysql commands in the container
@@ -182,12 +181,13 @@ RUN mkdir -p /run/nginx/ \
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-# Fix nginx permission error
+# Fix nginx permission problem
 RUN mkdir -p /run/nginx/ \
     && chown -Rf www-data:www-data /var/lib/nginx
 
 # create document root, fix permissions for www-data user and change owner to www-data
 # Some santy checks to make sure that laravel can write to the storage directory
+# and to make sure that the laravel application can be served by nginx.
 RUN mkdir -p $APP_HOME/public \
     && mkdir -p $APP_HOME/storage \
     && mkdir -p $APP_HOME/storage/framework \
@@ -232,6 +232,5 @@ RUN dos2unix /usr/local/bin/start-container
 RUN ["chmod", "+x", "/usr/local/bin/start-container"]
 
 EXPOSE 80 443
-# EXPOSE 6001
 
 CMD /wait && start-container
